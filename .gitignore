@@ -1,0 +1,6 @@
+/node_modules/
+/public/build/
+/public/build-info.json
+todo.md
+
+.DS_Store

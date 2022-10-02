@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    test-build-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout 🛎️
+              uses: actions/checkout@v2.3.1
+
+            - name: Install
+              run: |
+                  npm install
+
+            # - name: Run tests
+            #   run: |
+            #       npm run-script check
+
+            - name: Build 🔧
+              run: |
+                  npm run-script build
+
+            - name: Change base-tag in index.html from / to sql-playground
+              run: sed -i 's/<base href="\/" \/>/<base href="\/sql-playground\/" \/>/g' public/index.html
+
+            - name: Generate build info
+              run: |
+                  echo "{\"sha\": \"${{ github.sha }}\", \"ref\": \"${{ github.ref_name }}\", \"actor\": \"${{ github.actor }}\"}" >> public/build-info.json
+
+            - name: Deploy 🚀
+              uses: JamesIves/github-pages-deploy-action@4.1.7
+              with:
+                  branch: gh-pages
+                  folder: public
