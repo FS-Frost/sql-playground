@@ -87,13 +87,17 @@
     }
 
     function formatEditor() {
-        query = format(query, {
-            language: "sqlite",
-            newlineBeforeSemicolon: true,
-            tabWidth: 4,
-            linesBetweenQueries: 1,
-            keywordCase: "upper",
-        });
+        try {
+            query = format(query, {
+                language: "sqlite",
+                newlineBeforeSemicolon: true,
+                tabWidth: 4,
+                linesBetweenQueries: 1,
+                keywordCase: "upper",
+            });
+        } catch (error) {
+            showLog(`-- format error: ${error}`);
+        }
 
         if (sqlEditor != null) {
             sqlEditor.setValue(query);
