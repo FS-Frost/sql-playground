@@ -8,7 +8,7 @@
         <thead>
             <tr>
                 {#each result.columns as column}
-                    <th>{column}</th>
+                    <th class="th">{column}</th>
                 {/each}
             </tr>
         </thead>
@@ -37,5 +37,11 @@
         width: 100%;
         max-height: 300px;
         overflow: auto;
+    }
+
+    .th,
+    td {
+        color: var(--color, black);
+        background-color: var(--background-color, rgb(211, 211, 211));
     }
 </style>

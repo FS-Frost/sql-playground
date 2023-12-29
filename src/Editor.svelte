@@ -7,6 +7,7 @@
     import SqlEditor from "./SqlEditor.svelte";
     import { z } from "zod";
 
+    export let style: string;
     let db: Database;
     const queryShowTables = "SELECT * FROM sqlite_master WHERE type='table';";
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
@@ -47,13 +48,13 @@
         const getTodosResponse = todo.array();
 
         const response = await fetch(
-            "https://jsonplaceholder.typicode.com/todos"
+            "https://jsonplaceholder.typicode.com/todos",
         );
         const rawBody = await response.text();
 
         if (!response.ok) {
             showLog(
-                `error seeding database, status ${response.status}: ${rawBody}`
+                `error seeding database, status ${response.status}: ${rawBody}`,
             );
             return;
         }
@@ -78,8 +79,8 @@
             query += `
                 INSERT INTO todo (ID, userId, title, completed)
                 VALUES (${todo.id}, ${todo.userId}, '${todo.title}', ${
-                todo.completed ? 1 : 0
-            });
+                    todo.completed ? 1 : 0
+                });
             `;
         }
 
@@ -159,7 +160,7 @@
     }
 </script>
 
-<div class="editor">
+<div class="editor" {style}>
     {#if db == null}
         <p>Waiting for database to load...</p>
     {:else}
@@ -170,7 +171,7 @@
         >
 
         <div class={editorIsVisible ? "is-block" : "is-hidden"}>
-            <SqlEditor bind:this={sqlEditor} bind:value={query} />
+            <SqlEditor bind:this={sqlEditor} bind:value={query} {style} />
 
             <div class="buttons">
                 <button class="button is-info" on:click={() => exec(query)}
@@ -237,16 +238,26 @@
         margin-top: 0.5rem;
         width: 100%;
         border-radius: 0.2rem;
+        color: var(--color, black);
     }
 
     label:hover {
-        background-color: rgb(211, 211, 211);
+        background-color: var(
+            --label-hover-background-color,
+            rgb(211, 211, 211)
+        );
         cursor: pointer;
+    }
+
+    textarea {
+        color: var(--color, black);
+        border: 1px solid #b7b7b7;
     }
 
     .sql-logs {
         width: 100%;
         height: 100%;
         resize: vertical;
+        background-color: var(--background-color, rgb(211, 211, 211));
     }
 </style>
