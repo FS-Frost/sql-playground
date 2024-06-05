@@ -15,9 +15,10 @@
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
     let results: QueryExecResult[] = [];
     let logs: string[] = [];
-    let editorIsVisible = true;
-    let logIsVisible = true;
-    let resultsAreVisible = true;
+    let editorLoaded: boolean = false;
+    let editorIsVisible: boolean = true;
+    let logIsVisible: boolean = true;
+    let resultsAreVisible: boolean = true;
     let sqlEditor: SqlEditor;
 
     $: joinLogs = logs.reverse().join("\n");
@@ -30,6 +31,7 @@
         showLog("-- Database found!");
         await seed();
         await sqlEditor.init();
+        editorLoaded = true;
         formatEditor();
     });
 
@@ -175,25 +177,32 @@
         >
 
         <div class={editorIsVisible ? "is-block" : "is-hidden"}>
+            {#if !editorLoaded}
+                <p>Waiting for editor to load...</p>
+            {/if}
+
             <SqlEditor bind:this={sqlEditor} bind:value={query} {style} />
 
-            <div class="buttons">
-                <button class="button is-info" on:click={() => exec(query)}
-                    >Execute</button
-                >
+            {#if editorLoaded}
+                <div class="buttons">
+                    <button class="button is-info" on:click={() => exec(query)}
+                        >Execute</button
+                    >
 
-                <button class="button is-info" on:click={() => formatEditor()}
-                    >Format</button
-                >
+                    <button
+                        class="button is-info"
+                        on:click={() => formatEditor()}>Format</button
+                    >
 
-                <button class="button is-info" on:click={() => showTables()}
-                    >Show Tables</button
-                >
+                    <button class="button is-info" on:click={() => showTables()}
+                        >Show Tables</button
+                    >
 
-                <button class="button is-info" on:click={() => clearLog()}
-                    >Clear Log</button
-                >
-            </div>
+                    <button class="button is-info" on:click={() => clearLog()}
+                        >Clear Log</button
+                    >
+                </div>
+            {/if}
         </div>
 
         {#if results.length > 0}
