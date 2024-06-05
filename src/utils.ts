@@ -1,4 +1,4 @@
-export async function waitUntil(conditionFunction: () => boolean, everyMs: number, untilMs: number | null): Promise<void> {
+export async function waitUntil(conditionFunction: () => boolean, everyMs: number, untilMs: number | null): Promise<boolean> {
     return await new Promise((resolve, reject) => {
         let tries = 0;
 
@@ -6,12 +6,12 @@ export async function waitUntil(conditionFunction: () => boolean, everyMs: numbe
             tries++;
 
             if (untilMs && tries * everyMs >= untilMs) {
-                reject(`Timeout of ${untilMs} ms`);
+                reject(false);
                 clearInterval(interval);
             }
 
             if (conditionFunction()) {
-                resolve();
+                resolve(true);
                 clearInterval(interval);
             };
         }, everyMs);

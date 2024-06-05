@@ -27,6 +27,7 @@
         db = window.db;
         showLog("-- Database found!");
         await seed();
+        await sqlEditor.init();
         formatEditor();
     });
 
@@ -167,6 +168,7 @@
         <label
             class="label"
             for=""
+            on:keydown={() => {}}
             on:click={() => (editorIsVisible = !editorIsVisible)}>Editor</label
         >
 
@@ -196,6 +198,7 @@
             <label
                 class="label"
                 for=""
+                on:keydown={() => {}}
                 on:click={() => (resultsAreVisible = !resultsAreVisible)}
                 >Results</label
             >
@@ -215,6 +218,7 @@
         <label
             class="label"
             for=""
+            on:keydown={() => {}}
             on:click={() => (logIsVisible = !logIsVisible)}>Log</label
         >
 

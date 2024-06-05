@@ -3,6 +3,7 @@
     import type { editor } from "monaco-editor";
     // import * as monaco from "monaco-editor";
     import { onMount } from "svelte";
+    import { waitUntil } from "./utils";
 
     type Monaco =
         typeof import("../node_modules/monaco-editor/esm/vs/editor/editor.api");
@@ -26,7 +27,25 @@
         monaco.editor.setTheme(theme);
     }
 
-    onMount(() => {
+    function getCurrentValue(): string {
+        const currentValue = editor.getValue({
+            lineEnding: "\n",
+            preserveBOM: false,
+        });
+
+        return currentValue;
+    }
+
+    export function setValue(value: string): void {
+        if (editor == null) {
+            console.warn("sql editor not ready, can't set value", { value });
+            return;
+        }
+
+        editor.setValue(value);
+    }
+
+    export async function init(): Promise<void> {
         if (divEditor == null) {
             console.error("editor not found");
             return;
@@ -44,19 +63,18 @@
                 value = getCurrentValue();
             });
         });
-    });
 
-    function getCurrentValue(): string {
-        const currentValue = editor.getValue({
-            lineEnding: "\n",
-            preserveBOM: false,
-        });
+        const editorIsReady = await waitUntil(
+            () => editor != null,
+            100,
+            30_000,
+        );
 
-        return currentValue;
-    }
-
-    export function setValue(value: string) {
-        editor.setValue(value);
+        if (!editorIsReady) {
+            alert(
+                "Error: failed to initialize SQL editor. Try reloading the page.",
+            );
+        }
     }
 </script>
 
