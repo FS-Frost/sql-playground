@@ -8,8 +8,10 @@
     import { z } from "zod";
 
     export let style: string;
-    let db: Database;
+
     const queryShowTables = "SELECT * FROM sqlite_master WHERE type='table';";
+
+    let db: Database;
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
     let results: QueryExecResult[] = [];
     let logs: string[] = [];

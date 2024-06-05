@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Theme } from "./theme";
+
     export let theme: Theme = Theme.Enum.Dark;
 
     $: isDark = theme == Theme.Enum.Dark;

@@ -11,6 +11,8 @@
     }
 
     let buildInfo: BuildInfo | null = null;
+    let theme: Theme = Theme.enum.Dark;
+
     $: shortSha = buildInfo?.sha.substring(0, 7) ?? "";
 
     $: linkCommit = `https://github.com/FS-Frost/sql-playground/commit/${
@@ -23,7 +25,6 @@
 
     $: linkActor = `https://github.com/${buildInfo?.actor ?? ""}`;
 
-    let theme: Theme = Theme.enum.Dark;
     $: cssVarStyles = Object.entries({
         "background-color": theme == Theme.Enum.Dark ? "#1e1e1e" : "white",
         color: theme == Theme.Enum.Dark ? "white" : "black",
@@ -57,6 +58,7 @@
 
 <main style={cssVarStyles}>
     <h1 class="title">SQL Playground</h1>
+
     <ThemeToggle bind:theme />
 
     <Editor style={cssVarStyles} />

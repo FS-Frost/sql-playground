@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { QueryExecResult } from "sql.js";
+
     export let result: QueryExecResult;
 </script>
 
@@ -17,10 +18,10 @@
                 <tr>
                     {#each row as field, fieldIndex}
                         <td
-                            title={`Row ${rowIndex + 1}, ${
-                                result.columns[fieldIndex]
-                            }`}>{field}</td
+                            title={`Row ${rowIndex + 1}, ${result.columns[fieldIndex]}`}
                         >
+                            {field}
+                        </td>
                     {/each}
                 </tr>
             {/each}
