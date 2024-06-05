@@ -1,42 +1,29 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { waitUntil } from "./utils";
     import type { Database, QueryExecResult } from "sql.js";
     import { format } from "sql-formatter";
     import ResultTable from "./ResultTable.svelte";
     import SqlEditor from "./SqlEditor.svelte";
     import { z } from "zod";
+    import Logger from "./Logger.svelte";
 
     export let style: string;
 
     const queryShowTables = "SELECT * FROM sqlite_master WHERE type='table';";
 
+    let logger: Logger;
     let db: Database;
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
     let results: QueryExecResult[] = [];
     let logs: string[] = [];
     let editorLoaded: boolean = false;
-    let editorIsVisible: boolean = true;
-    let logIsVisible: boolean = true;
+    let editorVisible: boolean = true;
     let resultsAreVisible: boolean = true;
     let sqlEditor: SqlEditor;
 
-    $: joinLogs = logs.reverse().join("\n");
-
-    onMount(async () => {
-        showLog("-- Waiting for database...");
-        await waitUntil(() => window.db != null, 100, 3 * 1000);
-
-        db = window.db;
-        showLog("-- Database found!");
-        await seed();
-        await sqlEditor.init();
-        editorLoaded = true;
-        formatEditor();
-    });
-
     async function seed() {
-        exec(`CREATE TABLE todo (
+        executeQuery(`CREATE TABLE todo (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             userId INTEGER,
             title VARCHAR (255),
@@ -58,9 +45,8 @@
         const rawBody = await response.text();
 
         if (!response.ok) {
-            showLog(
-                `error seeding database, status ${response.status}: ${rawBody}`,
-            );
+            const title = `ERROR: failed to seed database, status ${response.status}`;
+            showLog(title, `${title}:\n${rawBody}`);
             return;
         }
 
@@ -72,7 +58,9 @@
             const msg = `${parseError.path.join(".")}: ${parseError.message}; ${
                 parseError.code
             }`;
-            showLog(msg);
+
+            const title = `ERROR: failed to seed database, JSON error`;
+            showLog(title, `${title}:\n${msg}`);
             return;
         }
 
@@ -89,7 +77,7 @@
             `;
         }
 
-        exec(query);
+        executeQuery(query);
     }
 
     function formatEditor() {
@@ -102,7 +90,8 @@
                 keywordCase: "upper",
             });
         } catch (error) {
-            showLog(`-- format error: ${error}`);
+            const title = "ERROR: SQL format";
+            showLog(title, `${title}:\n${error}`);
         }
 
         if (sqlEditor != null) {
@@ -110,7 +99,7 @@
         }
     }
 
-    function exec(query: string) {
+    function executeQuery(query: string) {
         if (query == null || query == "") {
             return;
         }
@@ -119,7 +108,7 @@
 
         try {
             console.log(query);
-            showLog(query);
+            showLog(`Query: ${query.substring(0, 10)}`, query);
             results = db.exec(query);
 
             if (results.length > 0) {
@@ -127,7 +116,8 @@
             }
         } catch (error) {
             console.error(error);
-            showLog(`-- ${error}`);
+            const title = "ERROR: execute query";
+            showLog(title, `${title}:\n${error}`);
             return;
         }
 
@@ -139,30 +129,52 @@
             }`;
         }
 
-        showLog(msg);
+        showLog("Query result", JSON.stringify(results, null, 2));
     }
 
-    function showLog(msg: string) {
+    function showLog(title: string, msg: string) {
         if (msg == "") {
             return;
         }
 
-        let time = new Date().toLocaleString();
-        time = `-- ${time}`;
+        let date = new Date().toLocaleString();
+        date = `-- ${date}`;
         const separator = logs.length > 0 ? [""] : [];
 
-        logs = [...logs, ...separator, msg, time];
+        logs = [...logs, ...separator, msg, date];
+
+        const time = new Date().toLocaleTimeString();
+        logger.addLog({
+            timestamp: Date.now() + Math.random(),
+            title: `${time}: ${title}`,
+            text: msg,
+            isOpen: false,
+        });
     }
 
     function showTables() {
         sqlEditor.setValue(queryShowTables + "\n");
         formatEditor();
-        exec(queryShowTables);
+        executeQuery(queryShowTables);
     }
 
     function clearLog() {
         logs = [];
+        logger.clear();
     }
+
+    onMount(async () => {
+        showLog("Waiting for database...", "Waiting for database...");
+        await waitUntil(() => window.db != null, 100, 3 * 1000);
+
+        db = window.db;
+        showLog("Database found!", "Database found!");
+        await tick();
+        await seed();
+        await sqlEditor.init();
+        editorLoaded = true;
+        formatEditor();
+    });
 </script>
 
 <div class="editor" {style}>
@@ -173,10 +185,13 @@
             class="label"
             for=""
             on:keydown={() => {}}
-            on:click={() => (editorIsVisible = !editorIsVisible)}>Editor</label
+            on:click={() => (editorVisible = !editorVisible)}
         >
+            {editorVisible ? "-" : "+"}
+            Editor
+        </label>
 
-        <div class={editorIsVisible ? "is-block" : "is-hidden"}>
+        <div class={editorVisible ? "is-block" : "is-hidden"}>
             {#if !editorLoaded}
                 <p>Waiting for editor to load...</p>
             {/if}
@@ -185,8 +200,9 @@
 
             {#if editorLoaded}
                 <div class="buttons">
-                    <button class="button is-info" on:click={() => exec(query)}
-                        >Execute</button
+                    <button
+                        class="button is-info"
+                        on:click={() => executeQuery(query)}>Execute</button
                     >
 
                     <button
@@ -225,20 +241,15 @@
                 {/each}
             {/if}
         {/if}
-
-        <label
-            class="label"
-            for=""
-            on:keydown={() => {}}
-            on:click={() => (logIsVisible = !logIsVisible)}>Log</label
-        >
-
-        <div class={logIsVisible ? "is-block" : "is-hidden"}>
-            <div class="control">
-                <textarea class="sql-logs" value={joinLogs} rows="5" disabled />
-            </div>
-        </div>
     {/if}
+
+    <Logger
+        bind:this={logger}
+        on:setEditor={(e) => {
+            sqlEditor.setValue(e.detail);
+            formatEditor();
+        }}
+    />
 </div>
 
 <style>
@@ -262,17 +273,5 @@
             rgb(211, 211, 211)
         );
         cursor: pointer;
-    }
-
-    textarea {
-        color: var(--color, black);
-        border: 1px solid #b7b7b7;
-    }
-
-    .sql-logs {
-        width: 100%;
-        height: 100%;
-        resize: vertical;
-        background-color: var(--background-color, rgb(211, 211, 211));
     }
 </style>
