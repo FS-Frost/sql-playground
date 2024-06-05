@@ -4,6 +4,8 @@
 
     export let log: Log;
 
+    let container: HTMLDivElement;
+
     const dispatch = createEventDispatcher<{
         open: undefined;
         close: undefined;
@@ -20,6 +22,10 @@
     }
 
     export function open(): void {
+        container.scrollIntoView({
+            behavior: "smooth",
+        });
+
         log.isOpen = true;
         dispatch("open");
     }
@@ -39,7 +45,7 @@
     }
 </script>
 
-<div class="log">
+<div class="log" bind:this={container}>
     <p
         class="log-title mb-2"
         on:keydown={() => {}}

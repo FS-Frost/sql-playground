@@ -12,6 +12,8 @@
 
     const queryShowTables = "SELECT * FROM sqlite_master WHERE type='table';";
 
+    let labelEditor: HTMLLabelElement;
+    let labelResults: HTMLLabelElement;
     let logger: Logger;
     let db: Database;
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
@@ -108,7 +110,7 @@
 
         try {
             console.log(query);
-            showLog(`Query: ${query.substring(0, 10)}`, query);
+            showLog(`Query: ${query.substring(0, 40)}`, query);
             results = db.exec(query);
 
             if (results.length > 0) {
@@ -156,11 +158,23 @@
         sqlEditor.setValue(queryShowTables + "\n");
         formatEditor();
         executeQuery(queryShowTables);
+
+        labelResults.scrollIntoView({
+            behavior: "smooth",
+        });
     }
 
     function clearLog() {
         logs = [];
         logger.clear();
+    }
+
+    async function handleExecuteButton(): Promise<void> {
+        executeQuery(query);
+        await tick();
+        labelResults.scrollIntoView({
+            behavior: "smooth",
+        });
     }
 
     onMount(async () => {
@@ -184,6 +198,7 @@
         <label
             class="label"
             for=""
+            bind:this={labelEditor}
             on:keydown={() => {}}
             on:click={() => (editorVisible = !editorVisible)}
         >
@@ -202,7 +217,7 @@
                 <div class="buttons">
                     <button
                         class="button is-info"
-                        on:click={() => executeQuery(query)}>Execute</button
+                        on:click={() => handleExecuteButton()}>Execute</button
                     >
 
                     <button
@@ -225,6 +240,7 @@
             <label
                 class="label"
                 for=""
+                bind:this={labelResults}
                 on:keydown={() => {}}
                 on:click={() => (resultsAreVisible = !resultsAreVisible)}
                 >Results</label
@@ -246,6 +262,10 @@
     <Logger
         bind:this={logger}
         on:setEditor={(e) => {
+            labelEditor.scrollIntoView({
+                behavior: "smooth",
+            });
+
             sqlEditor.setValue(e.detail);
             formatEditor();
         }}
