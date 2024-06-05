@@ -1,8 +1,6 @@
 <script lang="ts">
     import loader from "@monaco-editor/loader";
     import type { editor } from "monaco-editor";
-    // import * as monaco from "monaco-editor";
-    import { onMount } from "svelte";
     import { waitUntil } from "./utils";
 
     type Monaco =

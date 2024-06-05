@@ -11,6 +11,7 @@ https://fs-frost.github.io/sql-playground
 -   [Svelte](https://svelte.dev/)
 -   [TypeScript](https://www.typescriptlang.org/)
 -   [Bulma CSS Framework](https://bulma.io/)
+-   [Bun](https://bun.sh/)
 -   [Rollup](https://rollupjs.org/)
 -   [SQL.js](https://github.com/sql-js/sql.js/)
 -   [Monaco Editor](https://github.com/microsoft/monaco-editor)
@@ -20,8 +21,8 @@ https://fs-frost.github.io/sql-playground
 ## Run locally
 
 ```shell
-yarn install
-yarn run dev
+bun install
+bun run dev
 ```
 
 Navigate to http://localhost:5000.
