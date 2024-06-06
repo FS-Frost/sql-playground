@@ -1,7 +1,6 @@
 <script lang="ts">
     import loader from "@monaco-editor/loader";
     import type { editor } from "monaco-editor";
-    import { waitUntil } from "./utils";
 
     type Monaco =
         typeof import("../node_modules/monaco-editor/esm/vs/editor/editor.api");
@@ -26,6 +25,11 @@
     }
 
     function getCurrentValue(): string {
+        if (editor == null) {
+            console.warn("sql editor not ready, can't get value");
+            return "";
+        }
+
         const currentValue = editor.getValue({
             lineEnding: "\n",
             preserveBOM: false,

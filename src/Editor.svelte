@@ -18,6 +18,7 @@
     let db: Database;
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
     let results: QueryExecResult[] = [];
+    let databaseError: string = "";
     let editorError: string = "";
     let editorLoaded: boolean = false;
     let editorVisible: boolean = true;
@@ -174,7 +175,13 @@
 
     onMount(async () => {
         showLog("Waiting for database...", "Waiting for database...");
-        await waitUntil(() => window.db != null, 100, 3 * 1000);
+        const dbIsUp = await waitUntil(() => window.db != null, 100, 3 * 1000);
+        if (!dbIsUp) {
+            const title = "ERROR: failed to initialize database";
+            databaseError = `${title}. Try reloading the page.`;
+            showLog(title, databaseError);
+            return;
+        }
 
         db = window.db;
         showLog("Database found!", "Database found!");
@@ -182,7 +189,10 @@
         await seed();
         const sqlEditorInitError = await sqlEditor.init();
         if (sqlEditorInitError.length > 0) {
-            editorError = `ERROR: ${sqlEditorInitError}. Try reloading the page.`;
+            const title = `ERROR: ${sqlEditorInitError}`;
+            editorError = `${title}. Try reloading the page.`;
+            showLog(title, editorError);
+            console.log("show log", title);
             return;
         }
 
@@ -194,6 +204,10 @@
 <div class="editor" {style}>
     {#if db == null}
         <p>Waiting for database to load...</p>
+
+        {#if databaseError.length > 0}
+            <p class="editor-error mt-2">{databaseError}</p>
+        {/if}
     {:else}
         <label
             class="label"
