@@ -2,9 +2,11 @@
 
 [![Deploy to GitHub Pages](https://github.com/FS-Frost/sql-playground/actions/workflows/main.yml/badge.svg)](https://github.com/FS-Frost/sql-playground/actions/workflows/main.yml)
 
-SQL playground to test queries using [SQLite](https://www.sqlite.org/index.html) on the browser through [WASM](https://webassembly.org/).
+SQL playground to test queries using [SQLite](https://www.sqlite.org/index.html) on the browser through [WASM](https://webassembly.org/), installable as [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
 
 https://fs-frost.github.io/sql-playground
+
+<img src="public/img/preview.png" alt="Preview" />
 
 ## Built with
 
