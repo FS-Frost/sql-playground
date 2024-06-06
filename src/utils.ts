@@ -6,7 +6,7 @@ export async function waitUntil(conditionFunction: () => boolean, everyMs: numbe
             tries++;
 
             if (untilMs && tries * everyMs >= untilMs) {
-                reject(false);
+                resolve(false);
                 clearInterval(interval);
             }
 

@@ -43,36 +43,27 @@
         editor.setValue(value);
     }
 
-    export async function init(): Promise<void> {
+    export async function init(): Promise<string> {
         if (divEditor == null) {
-            console.error("editor not found");
-            return;
+            return "editor element not found";
         }
 
-        loader.init().then((monacoInstance: Monaco) => {
-            monaco = monacoInstance;
-            editor = monaco.editor.create(divEditor, {
-                value: value,
-                language: "sql",
-                theme: "vs-dark",
-            });
+        monaco = await loader.init();
+        if (monaco == null) {
+            return "failed to initialize SQL editor";
+        }
 
-            editor.onDidChangeModelContent(() => {
-                value = getCurrentValue();
-            });
+        editor = monaco.editor.create(divEditor, {
+            value: value,
+            language: "sql",
+            theme: "vs-dark",
         });
 
-        const editorIsReady = await waitUntil(
-            () => editor != null,
-            100,
-            30_000,
-        );
+        editor.onDidChangeModelContent(() => {
+            value = getCurrentValue();
+        });
 
-        if (!editorIsReady) {
-            alert(
-                "Error: failed to initialize SQL editor. Try reloading the page.",
-            );
-        }
+        return "";
     }
 </script>
 

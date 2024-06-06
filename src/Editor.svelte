@@ -18,10 +18,10 @@
     let db: Database;
     let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
     let results: QueryExecResult[] = [];
-    let logs: string[] = [];
+    let editorError: string = "";
     let editorLoaded: boolean = false;
     let editorVisible: boolean = true;
-    let resultsAreVisible: boolean = true;
+    let resultsVisible: boolean = true;
     let sqlEditor: SqlEditor;
 
     async function seed() {
@@ -106,6 +106,7 @@
             return;
         }
 
+        editorError = "";
         results = [];
 
         try {
@@ -114,10 +115,11 @@
             results = db.exec(query);
 
             if (results.length > 0) {
-                resultsAreVisible = true;
+                resultsVisible = true;
             }
         } catch (error) {
             console.error(error);
+            editorError = `${error}`;
             const title = "ERROR: execute query";
             showLog(title, `${title}:\n${error}`);
             return;
@@ -139,12 +141,6 @@
             return;
         }
 
-        let date = new Date().toLocaleString();
-        date = `-- ${date}`;
-        const separator = logs.length > 0 ? [""] : [];
-
-        logs = [...logs, ...separator, msg, date];
-
         const time = new Date().toLocaleTimeString();
         logger.addLog({
             timestamp: Date.now() + Math.random(),
@@ -165,7 +161,6 @@
     }
 
     function clearLog() {
-        logs = [];
         logger.clear();
     }
 
@@ -185,7 +180,12 @@
         showLog("Database found!", "Database found!");
         await tick();
         await seed();
-        await sqlEditor.init();
+        const sqlEditorInitError = await sqlEditor.init();
+        if (sqlEditorInitError.length > 0) {
+            editorError = `ERROR: ${sqlEditorInitError}. Try reloading the page.`;
+            return;
+        }
+
         editorLoaded = true;
         formatEditor();
     });
@@ -225,16 +225,23 @@
                         on:click={() => formatEditor()}>Format</button
                     >
 
-                    <button class="button is-info" on:click={() => showTables()}
-                        >Show Tables</button
+                    <button
+                        class="button is-info"
+                        on:click={() => showTables()}
                     >
+                        Show Tables
+                    </button>
 
-                    <button class="button is-info" on:click={() => clearLog()}
-                        >Clear Log</button
-                    >
+                    <button class="button is-info" on:click={() => clearLog()}>
+                        Clear Log
+                    </button>
                 </div>
             {/if}
         </div>
+
+        {#if editorError.length > 0}
+            <p class="editor-error mt-2">{editorError}</p>
+        {/if}
 
         {#if results.length > 0}
             <label
@@ -242,15 +249,16 @@
                 for=""
                 bind:this={labelResults}
                 on:keydown={() => {}}
-                on:click={() => (resultsAreVisible = !resultsAreVisible)}
-                >Results</label
+                on:click={() => (resultsVisible = !resultsVisible)}
             >
+                {resultsVisible ? "-" : "+"}
+                Results
+            </label>
 
-            {#if resultsAreVisible}
+            {#if resultsVisible}
                 {#each results as result, index}
                     <p>
-                        #{index + 1}: {result.columns.length} cols x {result
-                            .values.length} rows
+                        {`#${index + 1}: ${result.columns.length} col${result.columns.length === 1 ? "" : "s"} x ${result.values.length} row${result.values.length === 1 ? "" : "s"}`}
                     </p>
 
                     <ResultTable {result} />
@@ -293,5 +301,10 @@
             rgb(211, 211, 211)
         );
         cursor: pointer;
+    }
+
+    .editor-error {
+        color: red;
+        font-size: large;
     }
 </style>
