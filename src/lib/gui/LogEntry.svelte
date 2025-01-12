@@ -1,16 +1,21 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import type { Log } from "./log";
 
-    export let log: Log;
+    type Props = {
+        log: Log;
+        onOpen?: () => void;
+        onClose?: () => void;
+        onSetEditor?: (detail: string) => void;
+    };
 
-    let container: HTMLDivElement;
+    let {
+        log = $bindable(),
+        onOpen = () => {},
+        onClose = () => {},
+        onSetEditor = () => {},
+    }: Props = $props();
 
-    const dispatch = createEventDispatcher<{
-        open: undefined;
-        close: undefined;
-        setEditor: string;
-    }>();
+    let container = $state<HTMLDivElement>();
 
     async function copy(): Promise<void> {
         await navigator.clipboard.writeText(log.text);
@@ -18,21 +23,21 @@
     }
 
     function insert(): void {
-        dispatch("setEditor", log.text);
+        onSetEditor(log.text);
     }
 
     export function open(): void {
-        container.scrollIntoView({
+        container?.scrollIntoView({
             behavior: "smooth",
         });
 
         log.isOpen = true;
-        dispatch("open");
+        onOpen();
     }
 
     export function close(): void {
         log.isOpen = false;
-        dispatch("close");
+        onClose();
     }
 
     function toggleVisibility(): void {
@@ -46,21 +51,23 @@
 </script>
 
 <div class="log" bind:this={container}>
-    <p
+    <span
+        role="button"
+        tabindex="0"
         class="log-title mb-2"
-        on:keydown={() => {}}
-        on:click={() => toggleVisibility()}
+        onkeydown={() => {}}
+        onclick={() => toggleVisibility()}
     >
         {(log.isOpen ? "- " : "+") + log.title}
-    </p>
+    </span>
 
     {#if log.isOpen}
         <div class="buttons">
-            <button class="button is-info" on:click={() => copy()}>
+            <button class="button is-info" onclick={() => copy()}>
                 Copy
             </button>
 
-            <button class="button is-info" on:click={() => insert()}>
+            <button class="button is-info" onclick={() => insert()}>
                 Insert in editor
             </button>
         </div>
@@ -88,5 +95,11 @@
     textarea {
         width: 100%;
         height: 16rem;
+    }
+
+    .buttons {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        margin: 0;
     }
 </style>

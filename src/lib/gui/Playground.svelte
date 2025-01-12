@@ -4,26 +4,33 @@
     import type { Database, QueryExecResult } from "sql.js";
     import { format } from "sql-formatter";
     import ResultTable from "./ResultTable.svelte";
-    import SqlEditor from "./SqlEditor.svelte";
     import { z } from "zod";
     import Logger from "./Logger.svelte";
+    import Editor from "./Editor.svelte";
 
-    export let style: string;
+    type Props = {
+        style: string;
+    };
+
+    let { style }: Props = $props();
 
     const queryShowTables = "SELECT * FROM sqlite_master WHERE type='table';";
 
-    let labelEditor: HTMLLabelElement;
-    let labelResults: HTMLLabelElement;
-    let logger: Logger;
-    let db: Database;
-    let query: string = `SELECT * FROM todo ORDER BY userId, completed DESC, title;`;
-    let results: QueryExecResult[] = [];
-    let databaseError: string = "";
-    let editorError: string = "";
-    let editorLoaded: boolean = false;
-    let editorVisible: boolean = true;
-    let resultsVisible: boolean = true;
-    let sqlEditor: SqlEditor;
+    let labelEditor = $state<HTMLSpanElement>();
+    let labelResults = $state<HTMLSpanElement>();
+    let logger = $state<Logger>();
+    let db = $state<Database>();
+    let results = $state<QueryExecResult[]>([]);
+    let databaseError = $state<string>("");
+    let editorError = $state<string>("");
+    let editorLoaded = $state<boolean>(false);
+    let editorVisible = $state<boolean>(true);
+    let resultsVisible = $state<boolean>(true);
+    let sqlEditor = $state<Editor>();
+
+    let query = $state<string>(
+        `SELECT * FROM todo ORDER BY userId, completed DESC, title;`,
+    );
 
     async function seed() {
         executeQuery(`CREATE TABLE todo (
@@ -103,7 +110,7 @@
     }
 
     function executeQuery(query: string) {
-        if (query == null || query == "") {
+        if (query == null || query == "" || db == null) {
             return;
         }
 
@@ -143,7 +150,7 @@
         }
 
         const time = new Date().toLocaleTimeString();
-        logger.addLog({
+        logger?.addLog({
             timestamp: Date.now() + Math.random(),
             title: `${time}: ${title}`,
             text: msg,
@@ -152,23 +159,23 @@
     }
 
     function showTables() {
-        sqlEditor.setValue(queryShowTables + "\n");
+        sqlEditor?.setValue(queryShowTables + "\n");
         formatEditor();
         executeQuery(queryShowTables);
 
-        labelResults.scrollIntoView({
+        labelResults?.scrollIntoView({
             behavior: "smooth",
         });
     }
 
     function clearLog() {
-        logger.clear();
+        logger?.clear();
     }
 
     async function handleExecuteButton(): Promise<void> {
         executeQuery(query);
         await tick();
-        labelResults.scrollIntoView({
+        labelResults?.scrollIntoView({
             behavior: "smooth",
         });
     }
@@ -187,6 +194,12 @@
         showLog("Database found!", "Database found!");
         await tick();
         await seed();
+
+        if (sqlEditor == null) {
+            console.error("sql editor not ready");
+            return;
+        }
+
         const sqlEditorInitError = await sqlEditor.init();
         if (sqlEditorInitError.length > 0) {
             const title = `ERROR: ${sqlEditorInitError}`;
@@ -209,44 +222,48 @@
             <p class="editor-error mt-2">{databaseError}</p>
         {/if}
     {:else}
-        <label
+        <span
             class="label"
-            for=""
+            role="button"
+            tabindex="0"
             bind:this={labelEditor}
-            on:keydown={() => {}}
-            on:click={() => (editorVisible = !editorVisible)}
+            onkeydown={() => {}}
+            onclick={() => (editorVisible = !editorVisible)}
         >
             {editorVisible ? "-" : "+"}
             Editor
-        </label>
+        </span>
 
         <div class={editorVisible ? "is-block" : "is-hidden"}>
             {#if !editorLoaded}
                 <p>Waiting for editor to load...</p>
             {/if}
 
-            <SqlEditor bind:this={sqlEditor} bind:value={query} {style} />
+            <Editor
+                bind:this={sqlEditor}
+                bind:value={query}
+                minimapEnabled={false}
+                lang="sql"
+                readonly={false}
+            />
 
             {#if editorLoaded}
                 <div class="buttons">
                     <button
                         class="button is-info"
-                        on:click={() => handleExecuteButton()}>Execute</button
+                        onclick={() => handleExecuteButton()}>Execute</button
                     >
 
                     <button
                         class="button is-info"
-                        on:click={() => formatEditor()}>Format</button
+                        onclick={() => formatEditor()}>Format</button
                     >
 
-                    <button
-                        class="button is-info"
-                        on:click={() => showTables()}
-                    >
+                    <button class="button is-info" onclick={() => showTables()}>
                         Show Tables
                     </button>
 
-                    <button class="button is-info" on:click={() => clearLog()}>
+                    <button class="button is-info" onclick={() => clearLog()}>
                         Clear Log
                     </button>
                 </div>
@@ -258,16 +275,17 @@
         {/if}
 
         {#if results.length > 0}
-            <label
+            <span
                 class="label"
-                for=""
+                role="button"
+                tabindex="0"
                 bind:this={labelResults}
-                on:keydown={() => {}}
-                on:click={() => (resultsVisible = !resultsVisible)}
+                onkeydown={() => {}}
+                onclick={() => (resultsVisible = !resultsVisible)}
             >
                 {resultsVisible ? "-" : "+"}
                 Results
-            </label>
+            </span>
 
             {#if resultsVisible}
                 {#each results as result, index}
@@ -283,12 +301,12 @@
 
     <Logger
         bind:this={logger}
-        on:setEditor={(e) => {
-            labelEditor.scrollIntoView({
+        onSetEditor={(detail) => {
+            labelEditor?.scrollIntoView({
                 behavior: "smooth",
             });
 
-            sqlEditor.setValue(e.detail);
+            sqlEditor?.setValue(detail);
             formatEditor();
         }}
     />
@@ -302,14 +320,14 @@
         margin-right: 5%;
     }
 
-    label {
+    span {
         margin-top: 0.5rem;
         width: 100%;
         border-radius: 0.2rem;
         color: var(--color, black);
     }
 
-    label:hover {
+    span:hover {
         background-color: var(
             --label-hover-background-color,
             rgb(211, 211, 211)

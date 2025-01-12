@@ -1,37 +1,42 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Editor from "./Editor.svelte";
-    import { Theme } from "./theme";
-    import ThemeToggle from "./ThemeToggle.svelte";
+    import Playground from "../Playground.svelte";
+    import { Theme } from "../theme";
+    import ThemeToggle from "../ThemeToggle.svelte";
+    import { storeTheme } from "$lib/store";
 
-    interface BuildInfo {
+    const title: string = "SQL Playground";
+
+    type BuildInfo = {
         sha: string;
         ref: string;
         actor: string;
-    }
+    };
 
-    let buildInfo: BuildInfo | null = null;
-    let theme: Theme = Theme.enum.Dark;
+    let buildInfo = $state<BuildInfo | null>(null);
+    let theme = $state<Theme>(Theme.enum.Dark);
 
-    $: shortSha = buildInfo?.sha.substring(0, 7) ?? "";
+    let shortSha = $derived(buildInfo?.sha.substring(0, 7) ?? "");
 
-    $: linkCommit = `https://github.com/FS-Frost/sql-playground/commit/${
-        buildInfo?.sha ?? ""
-    }`;
+    let linkCommit = $derived(
+        `https://github.com/FS-Frost/sql-playground/commit/${buildInfo?.sha ?? ""}`,
+    );
 
-    $: linkBranch = `https://github.com/FS-Frost/sql-playground/tree/${
-        buildInfo?.ref ?? ""
-    }`;
+    let linkBranch = $derived(
+        `https://github.com/FS-Frost/sql-playground/tree/${buildInfo?.ref ?? ""}`,
+    );
 
-    $: linkActor = `https://github.com/${buildInfo?.actor ?? ""}`;
+    let linkActor = $derived(`https://github.com/${buildInfo?.actor ?? ""}`);
 
-    $: cssVarStyles = Object.entries({
-        "background-color": theme == Theme.Enum.Dark ? "#1e1e1e" : "white",
-        color: theme == Theme.Enum.Dark ? "white" : "black",
-        "label-hover-background-color": Theme.Enum.Dark ? "gray" : "",
-    })
-        .map(([key, value]) => `--${key}:${value}`)
-        .join(";");
+    let cssVarStyles = $derived(
+        Object.entries({
+            "background-color": theme == Theme.Enum.Dark ? "#1e1e1e" : "white",
+            color: theme == Theme.Enum.Dark ? "white" : "black",
+            "label-hover-background-color": Theme.Enum.Dark ? "gray" : "",
+        })
+            .map(([key, value]) => `--${key}:${value}`)
+            .join(";"),
+    );
 
     async function loadBuildInfo() {
         const url = "build-info.json";
@@ -53,15 +58,21 @@
 
     onMount(() => {
         loadBuildInfo();
+
+        storeTheme.subscribe((value) => (theme = value));
     });
 </script>
 
+<svelte:head>
+    <title>{title}</title>
+</svelte:head>
+
 <main style={cssVarStyles}>
-    <h1 class="title">SQL Playground</h1>
+    <h1 class="title">{title}</h1>
 
-    <ThemeToggle bind:theme />
+    <ThemeToggle />
 
-    <Editor style={cssVarStyles} />
+    <Playground style={cssVarStyles} />
 
     <div class="footer">
         <div class="container">
@@ -88,6 +99,7 @@
         padding: 8px;
         color: var(--color, black);
         background-color: var(--background-color, white);
+        width: 100%;
     }
 
     .title {

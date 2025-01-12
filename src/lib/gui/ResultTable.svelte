@@ -1,7 +1,11 @@
 <script lang="ts">
     import type { QueryExecResult } from "sql.js";
 
-    export let result: QueryExecResult;
+    type Props = {
+        result: QueryExecResult;
+    };
+
+    let { result }: Props = $props();
 </script>
 
 <div class="table-container">

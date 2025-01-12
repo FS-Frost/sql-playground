@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+		integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script src="js/fork-me-baby.min.js"></script>
+
+	<script src="./sql-wasm.js"></script>
+	<script type="module">
+		const sqlPromise = initSqlJs({
+			locateFile: (file) => `./${file}`,
+		});
+
+		const dataPromise = fetch("db.sqlite").then((res) =>
+			res.arrayBuffer()
+		);
+
+		const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+		window.db = new SQL.Database(new Uint8Array(buf));
+	</script>
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents">%sveltekit.body%</div>
+
+	<script>
+		forkMeBaby({
+			position: "top-right",
+			link: "https://github.com/FS-Frost/sql-playground",
+			sticky: false,
+		});
+
+		if ("serviceWorker" in navigator) {
+			window.addEventListener("load", function () {
+				navigator.serviceWorker
+					.register("worker.js")
+					.then(
+						function (registration) {
+							console.log("Worker registration successful", registration.scope);
+						},
+						function (err) {
+							console.log("Worker registration failed", err);
+						}
+					)
+					.catch(function (err) {
+						console.log(err);
+					});
+			});
+		} else {
+			console.log("Service Worker is not supported by browser.");
+		}
+	</script>
+
+	<style>
+		.fork-me-baby.top-right:before {
+			border-right-color: #302a7a !important;
+		}
+	</style>
+</body>
+
+</html>
