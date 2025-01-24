@@ -1,73 +1,105 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta charset="utf-8" />
+	<link rel="icon" href="./favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+		integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script src="js/fork-me-baby.min.js"></script>
 
-    <title>SQL Playground</title>
+	<script src="./sql-wasm.js"></script>
+	<script type="module">
+		const sqlPromise = initSqlJs({
+			locateFile: (file) => `./${file}`,
+		});
 
-    <base href="/sql-playground/" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="global.css" />
-    <link rel="stylesheet" href="build/bundle.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="js/fork-me-baby.min.js"></script>
+		const dataPromise = fetch("db.sqlite").then((res) =>
+			res.arrayBuffer()
+		);
 
-    <script src="./sql-wasm.js"></script>
-    <script type="module">
-        const sqlPromise = initSqlJs({
-            locateFile: (file) => `./${file}`,
-        });
-
-        const dataPromise = fetch("db.sqlite").then((res) =>
-            res.arrayBuffer()
-        );
-
-        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-        window.db = new SQL.Database(new Uint8Array(buf));
-    </script>
-
-    <script defer src="build/bundle.js"></script>
+		const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+		window.db = new SQL.Database(new Uint8Array(buf));
+	</script>
+	
+		<link href="./_app/immutable/assets/0.BImPYGyV.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/2.B4cOgdEW.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.BcyZX7Av.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.Bh42LaMQ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.Bd2CgyBA.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.CRlYUXoq.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.ChAZXFH2.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.wgVtMX6d.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/render.B3gIhLZT.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.CF0Gxr4Q.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/props.CDM2_9of.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.CV4o4EuX.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/legacy.AOlMrSt5.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.J8pFZIz0.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.CUiJjBYj.js">
 </head>
 
-<body>
-    <script>
-        forkMeBaby({
-            position: "top-right",
-            link: "https://github.com/FS-Frost/sql-playground",
-            sticky: false,
-        });
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents"><!--[--><!--[--><!----><div class="app svelte-1xwd6fg"><main class="svelte-1xwd6fg"><!----><!----><section class="svelte-u22agc"><!--[!--><!--]--><!----></section><!----><!----></main></div><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_1nw3cmt = {
+						base: new URL(".", location).pathname.slice(0, -1)
+					};
 
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", function () {
-                navigator.serviceWorker
-                    .register("js/worker.js")
-                    .then(
-                        function (registration) {
-                            console.log("Worker registration successful", registration.scope);
-                        },
-                        function (err) {
-                            console.log("Worker registration failed", err);
-                        }
-                    )
-                    .catch(function (err) {
-                        console.log(err);
-                    });
-            });
-        } else {
-            console.log("Service Worker is not supported by browser.");
-        }
-    </script>
+					const element = document.currentScript.parentElement;
 
-    <style>
-        .fork-me-baby.top-right:before {
-            border-right-color: #302a7a !important;
-        }
-    </style>
+					Promise.all([
+						import("./_app/immutable/entry/start.BcyZX7Av.js"),
+						import("./_app/immutable/entry/app.wgVtMX6d.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data: [null,null],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+
+	<script>
+		forkMeBaby({
+			position: "top-right",
+			link: "https://github.com/FS-Frost/sql-playground",
+			sticky: false,
+		});
+
+		if ("serviceWorker" in navigator) {
+			window.addEventListener("load", function () {
+				navigator.serviceWorker
+					.register("worker.js")
+					.then(
+						function (registration) {
+							console.log("Worker registration successful", registration.scope);
+						},
+						function (err) {
+							console.log("Worker registration failed", err);
+						}
+					)
+					.catch(function (err) {
+						console.log(err);
+					});
+			});
+		} else {
+			console.log("Service Worker is not supported by browser.");
+		}
+	</script>
+
+	<style>
+		.fork-me-baby.top-right:before {
+			border-right-color: #302a7a !important;
+		}
+	</style>
 </body>
 
 </html>
