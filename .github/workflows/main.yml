@@ -29,14 +29,14 @@ jobs:
                   bun run build
 
             - name: Change base-tag in index.html from / to sql-playground
-              run: sed -i 's/<base href="\/" \/>/<base href="\/sql-playground\/" \/>/g' public/index.html
+              run: sed -i 's/<base href="\/" \/>/<base href="\/sql-playground\/" \/>/g' build/index.html
 
             - name: Generate build info
               run: |
-                  echo "{\"sha\": \"${{ github.sha }}\", \"ref\": \"${{ github.ref_name }}\", \"actor\": \"${{ github.actor }}\"}" > public/build-info.json
+                  echo "{\"sha\": \"${{ github.sha }}\", \"ref\": \"${{ github.ref_name }}\", \"actor\": \"${{ github.actor }}\"}" > build/build-info.json
 
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@4.1.7
               with:
                   branch: gh-pages
-                  folder: public
+                  folder: build
