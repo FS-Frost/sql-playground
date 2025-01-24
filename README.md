@@ -6,7 +6,7 @@ SQL playground to test queries using [SQLite](https://www.sqlite.org/index.html)
 
 https://fs-frost.github.io/sql-playground
 
-<img src="public/img/preview.png" alt="Preview" />
+<img src="img/preview.png" alt="Preview" />
 
 ## Built with
 

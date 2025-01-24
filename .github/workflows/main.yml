@@ -35,6 +35,10 @@ jobs:
               run: |
                   echo "{\"sha\": \"${{ github.sha }}\", \"ref\": \"${{ github.ref_name }}\", \"actor\": \"${{ github.actor }}\"}" > build/build-info.json
 
+            - name: Generate .nojekyll
+              run: |
+                  echo "" > build/.nojekyll
+
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@4.1.7
               with:
