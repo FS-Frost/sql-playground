@@ -1,80 +1,203 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+/* ===== CSS Variables — Dark Theme ===== */
+:root {
+  --bg-base: #141518;
+  --bg-surface: #1d1e23;
+  --bg-elevated: #282a31;
+  --bg-hover: #2f313a;
+  --bg-active: #383b45;
+  --bg-input: #101114;
 
-html,
-body {
-	position: relative;
-	width: 100%;
-	height: 100%;
+  --border: #34363e;
+  --border-strong: #45474f;
+  --border-focus: #2f90e3;
+
+  --text-primary: #e7e8ec;
+  --text-secondary: #b2b5bf;
+  --text-muted: #82858f;
+  --text-heading: #f6f7f9;
+  --text-link: #5cc6ff;
+
+  --accent: #2f90e3;
+  --accent-hover: #4aa1ea;
+  --accent-dim: #16334d;
+
+  --success: #57c465;
+  --success-dim: #14311b;
+  --warning: #ffab2e;
+  --warning-dim: #3a2a08;
+  --error: #f2574c;
+  --error-dim: #3a1414;
+  --info: #42a5f5;
+
+  --num: #e0a17a;
+
+  --overlay: rgba(8, 9, 11, 0.62);
+  --overlay-loading: rgba(12, 13, 16, 0.60);
+
+  --sidebar-width: 260px;
+  --tabbar-height: 42px;
+  --toolbar-height: 40px;
+
+  --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-sm: 3px;
+  --radius: 5px;
+  --radius-lg: 8px;
+
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.65);
 }
 
-body {
-	color: #333;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+/* ===== CSS Variables — Light Theme ===== */
+:root[data-theme="light"] {
+  --bg-base: #f5f5f5;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ebebeb;
+  --bg-hover: #e8e8e8;
+  --bg-active: #d4d4d4;
+  --bg-input: #ffffff;
+
+  --border: #d0d0d0;
+  --border-strong: #b3b3b3;
+  --border-focus: #007acc;
+
+  --text-primary: #1e1e1e;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --text-heading: #111111;
+  --text-link: #0066bb;
+
+  --accent: #007acc;
+  --accent-hover: #005fa3;
+  --accent-dim: #cce4f7;
+
+  --success: #2e7d32;
+  --success-dim: #e8f5e9;
+  --warning: #e65100;
+  --warning-dim: #fff3e0;
+  --error: #c62828;
+  --error-dim: #ffebee;
+  --info: #1565c0;
+
+  --num: #b45309;
+
+  --overlay: rgba(30, 30, 30, 0.35);
+  --overlay-loading: rgba(255, 255, 255, 0.6);
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-	color: rgb(0, 100, 200);
-	text-decoration: none;
+  color: var(--text-link);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ===== Scrollbars ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #3a3d47; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4c4f5a; }
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb { background: #bdbdbd; }
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #9e9e9e; }
+
+/* ===== Base elements ===== */
+button {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  transition: background 0.1s, opacity 0.1s;
 }
 
-a:hover {
-	text-decoration: underline;
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+input, select, textarea {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  outline: none;
+  transition: border-color 0.15s;
 }
 
-a:visited {
-	color: rgb(0, 80, 160);
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus);
 }
 
 label {
-	display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+  display: block;
+  margin-bottom: 4px;
 }
 
-input,
-button,
-select,
-textarea {
-	font-family: inherit;
-	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+code, pre {
+  font-family: var(--font-mono);
 }
 
-input:disabled {
-	color: #ccc;
+/* ===== Button variants ===== */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
 }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
 
-button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
 }
+.btn-ghost:hover:not(:disabled) { background: var(--bg-hover); color: var(--text-primary); }
 
-button:disabled {
-	color: #999;
+.btn-danger {
+  background: transparent;
+  color: var(--error);
 }
+.btn-danger:hover:not(:disabled) { background: var(--error-dim); }
 
-button:not(:disabled):active {
-	background-color: #ddd;
-}
+/* ===== Utility ===== */
+.mono { font-family: var(--font-mono); }
+.text-muted { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
+.text-success { color: var(--success); }
+.text-error { color: var(--error); }
+.text-warning { color: var(--warning); }
 
-button:focus {
-	border-color: #666;
-}
-
-.text-center {
-	text-align: center;
-}
-
-.select {
-	width: 100%;
-}
-
-.select select {
-	width: 100%;
-}
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.flex-1 { flex: 1; min-width: 0; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }

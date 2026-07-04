@@ -5,10 +5,6 @@
 	<meta charset="utf-8" />
 	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-		integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<script src="js/fork-me-baby.min.js"></script>
 
 	<script src="./sql-wasm.js"></script>
 	<script type="module">
@@ -30,12 +26,6 @@
 	<div style="display: contents">%sveltekit.body%</div>
 
 	<script>
-		forkMeBaby({
-			position: "top-right",
-			link: "https://github.com/FS-Frost/sql-playground",
-			sticky: false,
-		});
-
 		if ("serviceWorker" in navigator) {
 			window.addEventListener("load", function () {
 				navigator.serviceWorker
@@ -56,12 +46,6 @@
 			console.log("Service Worker is not supported by browser.");
 		}
 	</script>
-
-	<style>
-		.fork-me-baby.top-right:before {
-			border-right-color: #302a7a !important;
-		}
-	</style>
 </body>
 
 </html>
