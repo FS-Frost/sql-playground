@@ -5,10 +5,6 @@
 	<meta charset="utf-8" />
 	<link rel="icon" href="./favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-		integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<script src="js/fork-me-baby.min.js"></script>
 
 	<script src="./sql-wasm.js"></script>
 	<script type="module">
@@ -24,37 +20,35 @@
 		window.db = new SQL.Database(new Uint8Array(buf));
 	</script>
 	
-		<link href="./_app/immutable/assets/0.BImPYGyV.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/2.B4cOgdEW.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.K-dWfB-J.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.DxH2Hfr8.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.Bd2CgyBA.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index.CRlYUXoq.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.ChAZXFH2.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.bleTFJRN.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/render.B3gIhLZT.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.CF0Gxr4Q.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/props.CDM2_9of.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.CV4o4EuX.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/legacy.AOlMrSt5.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.J8pFZIz0.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.CUiJjBYj.js">
+		<link href="./_app/immutable/assets/0.DiT4ax9e.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/2.Ct_RmJ2O.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.BbC_97Ao.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.Ili8N1xm.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.DwfslUtI.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.B9DyEm6t.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.KRrleTGV.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/render.8WVO_yvt.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.B0CHACly.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/props.B-UF0PdK.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.B85XW7PJ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/legacy.Bqf9M_nL.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.CDjV1dFR.js"><!--[--><!--]--><title>SQL Playground</title>
 </head>
 
 <body data-sveltekit-preload-data="hover">
-	<div style="display: contents"><!--[--><!--[--><!----><div class="app svelte-1xwd6fg"><main class="svelte-1xwd6fg"><!----><!----><section class="svelte-u22agc"><!--[!--><!--]--><!----></section><!----><!----></main></div><!----><!--]--> <!--[!--><!--]--><!--]-->
+	<div style="display: contents"><!--[--><!--[--><!----><!----><!----><div class="ide svelte-14wchhs"><header class="toolbar svelte-x60q1t"><div class="toolbar__brand svelte-x60q1t"><span class="brand-mark svelte-x60q1t">▚</span> <span class="brand-name svelte-x60q1t">SQL Playground</span></div> <button class="omnibox-trigger svelte-x60q1t" title="Buscar / comandos"><span>Buscar tablas, acciones…</span> <kbd class="svelte-x60q1t">Ctrl K</kbd></button> <div class="toolbar__actions svelte-x60q1t"><button class="btn-ghost icon-btn svelte-x60q1t" title="Historial (Ctrl+H)" aria-label="Historial">🕘</button> <button class="btn-ghost icon-btn svelte-x60q1t" title="Ajustes" aria-label="Ajustes">⚙️</button> <button class="btn-ghost icon-btn svelte-x60q1t" title="Cambiar tema" aria-label="Cambiar tema"><!--[--><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg><!--]--></button></div></header><!----> <div class="ide__body svelte-14wchhs"><!--[!--><aside class="sidebar svelte-4s4has" style="width: 260px"><div class="sidebar__header svelte-4s4has"><span class="sidebar__title svelte-4s4has">ESQUEMA</span> <div class="flex gap-1"><button class="btn-ghost icon-btn svelte-4s4has" title="Refrescar">⟳</button> <button class="btn-ghost icon-btn svelte-4s4has" title="Ocultar (Ctrl+B)">◂</button></div></div> <div class="sidebar__search svelte-4s4has"><input type="text" placeholder="Buscar tabla…" value="" class="svelte-4s4has"></div> <div class="sidebar__tree svelte-4s4has"><!--[--><div class="tree-empty svelte-4s4has">Sin tablas</div><!--]--> <!--[--><!--]--></div> <div class="sidebar__resize svelte-4s4has"></div></aside><!--]--><!----> <main class="ide__main svelte-14wchhs"><div class="tabbar svelte-1ikxsyg" role="tablist"><!--[--><!--]--> <button class="tab-new btn-ghost svelte-1ikxsyg" title="Nueva consulta" aria-label="Nueva consulta">+</button> <button class="tab-new btn-ghost svelte-1ikxsyg" title="Abrir archivo .sql" aria-label="Abrir archivo .sql">📂</button> <input type="file" accept=".sql,.SQL" style="display:none"> <div class="history-wrap svelte-1ikxsyg"><button class="tab-new btn-ghost svelte-1ikxsyg" disabled title="Pestañas cerradas recientemente (Ctrl+Shift+T restaura la última)" aria-label="Historial de pestañas cerradas">🕘</button> <!--[!--><!--]--></div></div><!----> <div class="ide__content svelte-14wchhs"><!--[--><div class="center-msg svelte-14wchhs">Cargando base de datos…</div><!--]--></div></main></div></div> <!--[!--><!--]--> <!--[!--><!--]--> <!--[!--><!--]--> <!--[!--><!--]--> <!--[!--><!--]--> <div class="toast-container svelte-73od70" role="region" aria-label="Notificaciones"><!--[--><!--]--></div><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_rsdhth = {
+					__sveltekit_1uik2kf = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("./_app/immutable/entry/start.K-dWfB-J.js"),
-						import("./_app/immutable/entry/app.bleTFJRN.js")
+						import("./_app/immutable/entry/start.BbC_97Ao.js"),
+						import("./_app/immutable/entry/app.KRrleTGV.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],
@@ -68,12 +62,6 @@
 		</div>
 
 	<script>
-		forkMeBaby({
-			position: "top-right",
-			link: "https://github.com/FS-Frost/sql-playground",
-			sticky: false,
-		});
-
 		if ("serviceWorker" in navigator) {
 			window.addEventListener("load", function () {
 				navigator.serviceWorker
@@ -94,12 +82,6 @@
 			console.log("Service Worker is not supported by browser.");
 		}
 	</script>
-
-	<style>
-		.fork-me-baby.top-right:before {
-			border-right-color: #302a7a !important;
-		}
-	</style>
 </body>
 
 </html>
